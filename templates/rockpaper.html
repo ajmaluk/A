@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Rock, Paper, Scissors Game</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <style>/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
+
+/* Apply global styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #E6E6FA;
+}
+
+h1 {
+  text-align: center;
+  font-size: 3rem;
+  margin-top: 2rem;
+  color: #660033;
+}
+
+/* Style scoreboard */
+.scoreboard {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.scoreboard > div {
+  font-size: 2rem;
+  margin: 0 1rem;
+  padding: 0.5rem;
+  border: 2px solid #660033;
+  border-radius: 10px;
+  color: #660033;
+}
+
+/* Style choices */
+.choices {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.choice {
+  border: 2px solid #660033;
+  border-radius: 10px;
+  margin: 0 2rem;
+  padding: 2rem;
+  background-color: #FFFFFF;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.choice:hover {
+  transform: scale(1.1);
+}
+
+.choice:active {
+  transform: scale(0.9);
+}
+
+.choice i {
+  color: #660033;
+  font-size: 50px;
+}
+
+/* Style result */
+.result {
+  text-align: center;
+  font-size: 2rem;
+  margin-top: 2rem;
+  color: #660033;
+}
+
+#computer-choice {
+  text-align: center;
+  font-size: 2rem;
+  color: #660033;
+}
+
+/* Style timer */
+.timer {
+  text-align: center;
+  font-size: 2rem;
+  margin-top: 1rem;
+  color: #660033;
+}
+
+/* Style play again button */
+.play-again {
+  display: block;
+  margin: 3rem auto 1rem auto;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 10px;
+  background-color: #660033;
+  color: #FFFFFF;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.play-again:hover {
+  background-color: #993366;
+}
+
+.logo {
+	position: absolute;
+	top: 30px;
+	right: 30px;
+	display: block;
+	z-index: 100;
+	transition: all 250ms linear;
+}
+
+.logo img {
+	height: 30px;
+	width: auto;
+	display: block;
+	border-radius: 50%;
+}
+
+.play-again:active {
+  transform: scale(0.9);
+}
+
+/* Add responsive design */
+@media only screen and (max-width: 600px) {
+  .choices {
+    flex-wrap: wrap;
+  }
+
+  .choice {
+    margin: 2rem 1rem;
+  }
+
+  .timer {
+    margin-top: 1rem;
+  }
+}
+
+  /* Home Logo */
+        .home-logo {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .home-logo a {
+            color: #000;
+            font-size: 24px;
+        }
+
+  </style>
+</head>
+<body oncontextmenu="return false">
+  <a class="logo" target="_blank">
+		<img src="../static/images/chatbot.jpg" alt="">
+</a><h1>Rock, Paper, Scissors</h1>
+  <div class="scoreboard">
+    <div class="player-score">Player: 0</div>
+    <div class="computer-score">Computer: 0</div>
+  </div>
+  <div class="choices">
+    <div class="choice" id="rock">
+      <i class="fas fa-hand-rock"></i>
+    </div>
+    <div class="choice" id="paper">
+      <i class="fas fa-hand-paper"></i>
+    </div>
+    <div class="choice" id="scissors">
+      <i class="fas fa-hand-scissors"></i>
+    </div>
+  </div>
+  <div class="result" id="result">
+    <p>Choose your weapon!</p>
+  </div>
+  <div id="computer-choice"></div>
+  <div class="timer" id="timer">
+    <p>Time left: <span id="countdown">10</span>s</p>
+  </div>
+  <button class="play-again" id="play-again">Play Again</button>
+
+  <div class="home-logo">
+        <a href="{{ url_for('games') }}"><i class="fas fa-home"></i></a>
+    </div>
+
+  <script>
+      const choices = document.querySelectorAll('.choice');
+const playerScoreElem = document.querySelector('.player-score');
+const computerScoreElem = document.querySelector('.computer-score');
+const resultElem = document.querySelector('#result');
+const playAgainBtn = document.querySelector('#play-again');
+const countdownElem = document.querySelector('#countdown');
+const computerChoiceElem = document.querySelector('#computer-choice');
+
+const weapons = ['rock', 'paper', 'scissors'];
+let playerScore = 0;
+let computerScore = 0;
+let countdown = 10;
+let timeout;
+
+// Function to generate random weapon for computer
+function computerPlay() {
+  const weaponIndex = Math.floor(Math.random() * weapons.length);
+  return weapons[weaponIndex];
+}
+
+// Function to update score and display result
+function updateScore(playerWeapon, computerWeapon) {
+  clearTimeout(timeout);
+  if (playerWeapon) {
+    computerChoiceElem.innerHTML = `Computer choose: ${computerWeapon}.`;
+    if (playerWeapon === computerWeapon) {
+      resultElem.innerHTML = "It's a tie!";
+    } else if (
+      (playerWeapon === 'rock' && computerWeapon === 'scissors') ||
+      (playerWeapon === 'paper' && computerWeapon === 'rock') ||
+      (playerWeapon === 'scissors' && computerWeapon === 'paper')
+    ) {
+      resultElem.innerHTML = 'You win!';
+      playerScore++;
+      playerScoreElem.innerHTML = `Player: ${playerScore}`;
+    } else {
+      resultElem.innerHTML = 'D2K wins!';
+      computerScore++;
+      computerScoreElem.innerHTML = `Computer: ${computerScore}`;
+    }
+    startTimer();
+  } else {
+    computerChoiceElem.innerHTML = `Game Over`;
+    resultElem.innerHTML = 'You did not make a choice! | You lose the game!';
+    resultElem.style.color = 'red';
+    disableOptions();
+  }
+
+  if (playerScore === 5) {
+    resultElem.textContent = 'You win the game!';
+    resultElem.style.color = 'green';
+    computerChoiceElem.innerHTML = 'Game Over';
+    disableOptions();
+    stopTimer();
+  }
+
+  if (computerScore === 5) {
+    resultElem.textContent = 'You lose the game!';
+    resultElem.style.color = 'red';
+    computerChoiceElem.innerHTML = 'Game Over';
+    disableOptions();
+    stopTimer();
+  }
+}
+
+// Function to handle player choice
+function selectWeapon() {
+  clearTimeout(timeout);
+  countdownElem.innerHTML = '10';
+  countdown = 10;
+  const playerWeapon = this.id;
+  const computerWeapon = computerPlay();
+  updateScore(playerWeapon, computerWeapon);
+}
+
+// Function to start countdown timer
+function startTimer() {
+  countdown--;
+  countdownElem.innerHTML = countdown;
+  if (countdown === 0) {
+    const computerWeapon = computerPlay();
+    updateScore(null, computerWeapon);
+  } else {
+    timeout = setTimeout(startTimer, 1000);
+  }
+}
+
+function stopTimer() {
+  clearInterval(timeout);
+  countdown = 10;
+  countdownElem.textContent = countdown;
+}
+
+// Function to reset the game
+function resetGame() {
+  playerScore = 0;
+  computerScore = 0;
+  countdown = 10;
+  playerScoreElem.innerHTML = 'Player: 0';
+  computerScoreElem.innerHTML = 'Computer: 0';
+  resultElem.innerHTML = 'Choose your weapon!';
+  countdownElem.innerHTML = '10';
+  resultElem.style.color = '#660033';
+  computerChoiceElem.innerHTML = '';
+  enableOptions();
+  startTimer();
+}
+
+function disableOptions() {
+  choices.forEach((choice) => {
+    choice.style.pointerEvents = 'none';
+  });
+}
+
+function enableOptions() {
+  choices.forEach((choice) => {
+    choice.style.pointerEvents = 'auto';
+  });
+}
+
+// Event listeners
+choices.forEach((choice) => choice.addEventListener('click', selectWeapon));
+playAgainBtn.addEventListener('click', resetGame);
+
+// Start countdown timer when page loads
+countdownElem.innerHTML = countdown; // Set initial value of countdown in HTML
+timeout = setTimeout(startTimer, 1000);
+  </script>
+</body>
+</html>

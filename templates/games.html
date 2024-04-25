@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Card Design HTML and CSS | CodingNepal</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        /* Importing Google font - Open Sans */
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        body {
+            background: #ecececdb;
+        }
+
+        .card-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            max-width: 1250px;
+            margin: 150px auto;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .card-list .card-item {
+            background: #fff;
+            padding: 26px;
+            border-radius: 8px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.04);
+            list-style: none;
+            cursor: pointer;
+            text-decoration: none;
+            border: 2px solid transparent;
+            transition: border 0.5s ease;
+        }
+
+        .card-list .card-item:hover {
+            border: 2px solid #000;
+        }
+
+        .card-list .card-item img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .card-list span {
+            display: inline-block;
+            background: #F7DFF5;
+            margin-top: 32px;
+            padding: 8px 15px;
+            font-size: 0.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
+        .card-list .developer {
+            background-color: #F7DFF5;
+            color: #B22485;
+        }
+
+        .card-list .designer {
+            background-color: #d1e8ff;
+            color: #2968a8;
+        }
+
+        .card-list .editor {
+            background-color: #d6f8d6;
+            color: #205c20;
+        }
+
+        .card-item h3 {
+            color: #000;
+            font-size: 1.438rem;
+            margin-top: 28px;
+            font-weight: 600;
+        }
+
+        .card-item .arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-35deg);
+            height: 40px;
+            width: 40px;
+            color: #000;
+            border: 1px solid #000;
+            border-radius: 50%;
+            margin-top: 40px;
+            transition: 0.2s ease;
+        }
+
+        .card-list .card-item:hover .arrow  {
+            background: #000;
+            color: #fff;
+        }
+
+        @media (max-width: 1200px) {
+            .card-list .card-item {
+                padding: 15px;
+            }
+        }
+
+        @media screen and (max-width: 980px) {
+            .card-list {
+                margin: 0 auto;
+            }
+        }
+
+        /* Social Icons */
+        .social-icons {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .social-icons a {
+            color: #000;
+            font-size: 24px;
+            margin: 0 10px;
+        }
+
+        /* Home Logo */
+        .home-logo {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .home-logo a {
+            color: #000;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false">
+    <!-- Home Logo -->
+    <div class="home-logo">
+        <a href="{{ url_for('home') }}"><i class="fas fa-home"></i></a>
+    </div>
+
+    <div class="card-list">
+
+        <a href="{{ url_for('rockpaper2') }}" class="card-item">
+            <img src="../static/images/Games/r2.png" alt="Card Image">
+            <span class="developer">Play Rock Paper Scissors</span>
+            <h3>Rock Paper Scissors is a simple and interesting game</h3>
+            <div class="arrow">
+                <i class="fas fa-arrow-right card-icon"></i>
+            </div>
+        </a>
+        <a href="{{ url_for('chess') }}" class="card-item">
+            <img src="../static/images/Games/chess.png" alt="Card Image">
+            <span class="developer">Play Chess</span>
+            <h3>Play a game of chess within seconds.</h3>
+            <div class="arrow">
+                <i class="fas fa-arrow-right card-icon"></i>
+            </div>
+        </a>
+        <a href="{{ url_for('tac_pro') }}" class="card-item">
+            <img src="../static/images/Games/tic-tac1.png" alt="Card Image">
+            <span class="developer">Play Tic Tac Toe 2</span>
+            <h3>Tic Tac Toe is a puzzle game for two players</h3>
+            <div class="arrow">
+                <i class="fas fa-arrow-right card-icon"></i>
+            </div>
+        </a>
+        <a href="{{ url_for('rockpaper') }}" class="card-item">
+            <img src="../static/images/Games/rock-paper.png" alt="Card Image">
+            <span class="developer">Play Rock Paper Scissors</span>
+            <h3>Rock Paper Scissors is a simple and interesting game</h3>
+            <div class="arrow">
+                <i class="fas fa-arrow-right card-icon"></i>
+            </div>
+        </a>
+        <a href="{{ url_for('tac') }}" class="card-item">
+            <img src="../static/images/Games/tic-tac.png" alt="Card Image">
+            <span class="developer">Play Tic Tac Toe</span>
+            <h3>Tic Tac Toe is a puzzle game for two players</h3>
+            <div class="arrow">
+                <i class="fas fa-arrow-right card-icon"></i>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- Social Icons -->
+    <div class="social-icons">
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+
+    </div>
+</body>
+</html>

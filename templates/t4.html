@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>D2K AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.4/purify.min.js"></script>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+        :root{
+        --text-color: #FFFFFF;
+        --icon-color: #ACACBE;
+        --icon-hover-bg:#5b5e71;
+        --placeholder-color:#cccccc;
+        --outgoing-chat-bg:#343541;
+        --incoming-chat-bg:#444654;
+        --outgoing-chat-border:#343541;
+        --incoming-chat-border:#444654;
+
+        }
+
+        .light-mode{
+        --text-color: #343541;
+        --icon-color: #a9a9bc;
+        --icon-hover-bg:#f1f1f3;
+        --placeholder-color:#9f9f9f;
+        --outgoing-chat-bg:#FFFFFF;
+        --incoming-chat-bg:#F7F7F8;
+        --outgoing-chat-border:#FFFFFF;
+        --incoming-chat-border:#D9D9E3;
+
+        }
+
+
+
+        body{
+
+            background: var(--outgoing-chat-bg);
+
+        }
+
+        .chat-container {
+            max-height: 100vh;
+            padding-bottom: 150px;
+            overflow-y: auto;
+        }
+
+        .home-button-container {
+    position: fixed; /* Change from absolute to fixed */
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+}
+
+    /* Style for the home button */
+    .home-btn {
+        background: var(--incoming-chat-bg);
+        border: 1px solid var(--incoming-chat-border);
+        cursor: pointer;
+        padding: 4px 6px; /* Adjust padding to decrease the size */
+        color: var(--icon-color);
+        font-size: 80%; /* Set the font size to decrease the size */
+    }
+        .default-text {
+            display: flex;
+            align-items:center;
+            justify-content:center;
+            flex-direction:column;
+            height: 70vh;
+            padding: 0 10px;
+            text-align: center;
+            color: var(--text-color);
+        };
+
+        .default-text h1{
+            font-size: 3.3rem;
+        }
+
+        .default-text h1{
+            font-size: 2.3rem;
+        }
+
+
+        .default-text p{
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+
+        :where(.chat-container, textarea)::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        :where(.chat-container, textarea)::-webkit-scrollbar-track {
+            background: var(--incoming-chat-bg);
+            border-radius: 25px;
+        }
+
+        :where(.chat-container, textarea)::-webkit-scrollbar-thumb {
+            background: var(--icon-color);
+            border-radius: 25px;
+        }
+
+        .chat-container .chat {
+            padding:25px 10px;
+            display:flex;
+            justify-content: center;
+            color: var(--text-color);
+        }
+
+        .chat-container .chat.outgoing{
+            background: var(--outgoing-chat-bg);
+            border : 1px solid var(--outgoing-chat-border);
+        }
+
+        .chat-container .chat.incoming{
+            background: var(--incoming-chat-bg);
+            border : 1px solid var(--incoming-chat-border);
+        }
+
+        .chat .chat-content {
+            display : flex;
+            max-width:1200px;
+            width:100%;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .chat .chat-content span{
+            font-size : 1.3rem;
+            color: var(--icon-color);
+            visibility:hidden;
+        }
+
+        .chat:hover .chat-content:not(:has(.typing-animation)) span{
+            visibility:visible;
+        }
+
+        .chat .chat-details{
+            display:flex;
+            align-items:center;
+        }
+
+        .chat .chat-details img{
+            width: 35px;
+            height : 35px;
+            align-self: flex-start;
+            object-fit : cover;
+            border-radius: 50%;
+        }
+
+
+        .chat .chat-details p{
+            white-space:pre-wrap;
+
+            font-size: 1.05rem;
+            padding: 0 50px 0 25px;
+        }
+
+        span.material-symbols-rounded{
+            user-select:none;
+            cursor:pointer;
+        }
+
+        .typing-animation {
+    display: inline-flex;
+    padding-left: 25px;
+}
+
+.typing-dot {
+    height: 7px;
+    width: 7px;
+    opacity: 0.7;
+    margin: 0.3px;
+    border-radius: 50%;
+    background: var(--text-color);
+    animation: animateDots 1.5s var(--delay) ease-in-out infinite;
+}
+
+@keyframes animateDots {
+    0%, 44% {
+        transform: translateY(0px);
+    }
+    22% {
+        opacity: 0.4;
+        transform: translateY(-6px);
+    }
+    44% {
+        opacity: 0.2;
+    }
+}
+        .typing-container {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            padding:20px 10px;
+            justify-content: center;
+            background: var(--outgoing-chat-bg);
+            border: 1px solid var(--incoming-chat-border);
+        }
+
+        .typing-container .typing-content{
+            max-width : 950px;
+            width:100%;
+            display: flex;
+            align-items:flex-end;
+        }
+
+        .typing-content .typing-textarea{
+            width:100%;
+            display: flex;
+            position: relative;
+        }
+
+        .typing-textarea textarea {
+            width:100%;
+            height:55px;
+            border:none;
+            resize:none;
+            font-size: 1rem;
+            border-radius:4px;
+            color: var(--text-color);
+            padding: 15px 45px 15px 20px;
+            background: var(--incoming-chat-bg);
+            outline: 1px solid var(--incoming-chat-border);
+        }
+
+        .typing-textarea textarea::placeholder{
+            color: var(--placeholder-color)
+        }
+
+        .typing-textarea span{
+            position: absolute;
+            right:0;
+            bottom: 0;
+            visibility:hidden;
+        }
+
+        .typing-textarea textarea:valid ~ span{
+            visibility:visible;
+        }
+
+        .typing-content span{
+            height: 55px;
+            width: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--icon-color);
+        }
+
+        .typing-controls{
+            display: flex;
+        }
+
+        .typing-controls span{
+            margin-left: 7px;
+            font-size: 1.4rem;
+            border-radius: 4px;
+            background: var(--incoming-chat-bg);
+            border: 1px solid var(--incoming-chat-border);
+        }
+
+        .typing-controls span,
+.typing-controls a {
+    margin-left: 7px;
+    font-size: 1.4rem;
+    border-radius: 4px;
+    background: var(--incoming-chat-bg);
+    border: 1px solid var(--incoming-chat-border);
+    cursor: pointer;
+}
+
+/* Add this style to ensure consistent styling for the buttons */
+.typing-controls a {
+    width:55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--icon-color);
+}
+
+/* Add this style to change the cursor on hover */
+.typing-controls a:hover {
+    background: var(--icon-hover-bg);
+}
+
+.circle {
+    width: 150px; /* Adjust size as needed */
+    height: 150px; /* Adjust size as needed */
+    border-radius: 50%; /* Makes the div round */
+    overflow: hidden; /* Hides anything outside the circle */
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    margin: 0 auto; /* Center the container horizontally */
+}
+
+.circle img {
+    max-width: 100%; /* Ensures the image fills the circle */
+    max-height: 100%; /* Ensures the image fills the circle */
+    border-radius: 50%; /* Makes the image circular */
+}
+
+        /* Add this style to position the copy buttons next to the content vertically */
+.content-container {
+    display: flex;
+    align-items: center;
+}
+
+/* Add this style to position copy buttons */
+.chat-details {
+    position: relative;
+}
+
+
+
+
+.copy-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translateY(-50%);
+    margin-top: 10px; /* Adjust as needed */
+    cursor: pointer;
+}
+
+/* Add this style to ensure the copy buttons are visible */
+.copy-btn > .material-icons {
+    visibility: visible;
+}
+
+
+.styled-code {
+    background-color: black; /* Black background */
+    color: white; /* Green text color */
+    font-family: Monospace;
+    font-size : 0.8rem;
+    text-shadow: 2px 2px 2px black; /* Text shadow */
+    border-radius: 15px; /* Rounded corners */
+    padding: 10px 20px; /* Padding to increase height according to text and fixed width */
+    width: 300px; /* Fixed width */
+    display: inline-block;
+    border-top: 4px solid red; /
+    border-bottom: 4px solid red; /
+    font-weight: bold; /* Make the text bold */
+}
+
+
+.copy-tick {
+  color: green; /* Change this to your preferred green shade */
+}
+
+
+
+    </style>
+</head>
+<body oncontextmenu="return false">
+    <div class="chat-container">
+
+    </div>
+
+
+
+    <div class="default-text">
+            <h1><br><br><br></h1>
+            <div class="circle">
+    <img src="../static/images/chatbot.jpg" alt="Chatbot">
+            </div>
+            <p>How can I help you today?</p>
+    </div>
+
+    <div class="typing-container">
+        <div class="typing-content">
+            <div class="typing-textarea">
+                <textarea id="chat-input" placeholder="Enter prompt..." required></textarea>
+                <span id="send-btn" class="material-symbols-rounded">send</span>
+
+            </div>
+            <div class="typing-controls">
+                <span id="theme-btn" class="material-symbols-rounded">light_mode</span>
+                <span id="delete-btn" class="material-symbols-rounded" onclick="confirmDelete()">delete</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="home-button-container">
+        <a href="{{ url_for('home') }}" class="material-symbols-rounded home-btn">home</a>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/he/1.2.0/he.min.js"></script>
+
+        <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const chatInput = document.querySelector("#chat-input");
+    const sendButton = document.querySelector("#send-btn");
+    const chatContainer = document.querySelector(".chat-container");
+    const themeButton = document.querySelector("#theme-btn");
+    const deleteButton = document.querySelector("#delete-btn");
+    const defaultText = document.querySelector(".default-text");
+
+
+
+    const pinkKeywordsRegex = /(int|void|const|float|double|string)\b/g;
+    const lightRedKeywordsRegex = /(const|struct|union|module|return|getch|public|private)\b/g;
+    const blueKeywordsRegex = /(print|cout|cin|scanf|input|printf|gets|puts|get|put|putc|include|getc|system|def)\b/g;
+    const yellowKeywordsRegex = /(else|elif|else if|switch|while)\b/g;
+    const orangeKeywordsRegex = /(\n|\t|%d|%f|%c|%s)\b/g;
+    const greenKeywordsRegex = /(import|from|stdio.h|conio.h|string.h|math.h|iostream.h|stdlib.h)\b/g;
+
+    const initialHeight = chatInput.scrollHeight;
+
+    let previousInput = '';
+    let previousResponse = '';
+
+     const handleCopyButtonClick = (copyButton) => {
+        const tickIcon = document.createElement("span");
+        tickIcon.classList.add("material-symbols-rounded", "copy-tick");
+        tickIcon.innerHTML = "check"; // Material symbol for checkmark
+        tickIcon.style.color = "green"; // Set inline color
+        copyButton.appendChild(tickIcon);
+
+        setTimeout(() => {
+            copyButton.removeChild(tickIcon);
+        }, 2000); // Adjust delay for animation duration (1 second in this case)
+    };
+
+    const updatePreviousChats = (userInput, aiResponse) => {
+    const previousChats = JSON.parse(localStorage.getItem("PreviousChats")) || [];
+    previousChats.push({ userInput, aiResponse });
+    localStorage.setItem("PreviousChats", JSON.stringify(previousChats));
+    };
+
+    // Function to clear PreviousChats from local storage
+    const clearPreviousChats = () => {
+        localStorage.removeItem("PreviousChats");
+    };
+
+    // Function to update previous input and response variables
+    const updatePreviousInputAndResponse = (input, response) => {
+        previousInput = input;
+        previousResponse = response;
+    };
+
+    const updateChatInputHeight = () => {
+        chatInput.style.height = `${initialHeight}px`;
+
+        const maxHeight = window.innerHeight * 0.25;
+
+        chatInput.style.height = `${Math.min(chatInput.scrollHeight, maxHeight)}px`;
+    };
+
+    const createElement = (html, className) => {
+        const chatDiv = document.createElement("div");
+        chatDiv.classList.add("chat", className);
+        chatDiv.innerHTML = DOMPurify.sanitize(html);
+        return chatDiv;
+    };
+
+    const updateDefaultTextVisibility = () => {
+        const hasChatMessages = chatContainer.querySelector('.chat') !== null;
+        defaultText.style.display = hasChatMessages ? "none" : "block";
+    };
+
+    // Load chat history from local storage
+    const storedChatHistory = localStorage.getItem("chatHistory");
+    if (storedChatHistory) {
+        chatContainer.innerHTML = storedChatHistory;
+        updateDefaultTextVisibility();
+    }
+
+    chatInput.addEventListener("input", () => {
+        updateChatInputHeight();
+    });
+
+    window.addEventListener("resize", () => {
+        updateChatInputHeight();
+    });
+
+    let userText = null;
+
+    const simulateTypingAnimation = (incomingChatDiv) => {
+        const typingAnimation = incomingChatDiv.querySelector(".typing-animation");
+
+        if (typingAnimation) {
+            typingAnimation.innerHTML = '';
+
+            for (let i = 0; i < 3; i++) {
+                const typingDot = document.createElement("div");
+                typingDot.classList.add("typing-dot");
+                typingDot.style.setProperty('--delay', `${0.2 * (i + 1)}s`);
+                typingAnimation.appendChild(typingDot);
+            }
+        }
+    };
+
+    const addIncomingChatWithAnimation = () => {
+        const html = `<div class="chat-content">
+            <div class="chat-details">
+                <img src="../static/images/chatbot.jpg" alt="chatbot-img">
+                <div class="typing-animation"></div>
+            </div>
+        </div>`;
+        const incomingChatDiv = createElement(html, "incoming");
+        chatContainer.appendChild(incomingChatDiv);
+
+        simulateTypingAnimation(incomingChatDiv);
+
+        return incomingChatDiv;
+    };
+
+    const addChatToLocalStorage = (chatHtml) => {
+        const currentChatHistory = localStorage.getItem("chatHistory") || "";
+        const newChatHistory = currentChatHistory + chatHtml;
+        localStorage.setItem("chatHistory", newChatHistory);
+    };
+
+    const clearChatLocalStorage = () => {
+        localStorage.removeItem("chatHistory");
+    };
+
+    const removeTypingAnimation = (incomingChatDiv) => {
+        const typingAnimation = incomingChatDiv.querySelector(".typing-animation");
+        if (typingAnimation) {
+            typingAnimation.remove();
+        }
+    };
+
+    const escapeHtml = (unsafe) => {
+        return unsafe.replace(/[&<"']/g, (m) => {
+            switch (m) {
+                case '&':
+                    return '&amp;';
+                case '<':
+                    return '&lt;';
+                case '"':
+                    return '&quot;';
+                case "'":
+                    return '&#039;';
+            }
+        });
+    };
+
+    const handleOutgoingChat = () => {
+        userText = escapeHtml(chatInput.value.trim());
+        const sanitizedUserText = DOMPurify.sanitize(userText);
+
+        const outgoingChatDiv = createElement(`<div class="chat-content">
+            <div class="chat-details">
+                <img src="../static/images/user1.png" alt="user-img">
+                <p>${sanitizedUserText}</p>
+            </div>
+        </div>`, "outgoing");
+        chatContainer.appendChild(outgoingChatDiv);
+
+        addChatToLocalStorage(outgoingChatDiv.outerHTML);
+
+        const incomingChatDiv = addIncomingChatWithAnimation();
+
+        fetch('/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_input: userText, previous_input: previousInput, previous_response: previousResponse, previous_chats: JSON.parse(localStorage.getItem("PreviousChats")) || [] }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            let aiResponse = data.result;
+            // Sanitize AI response
+            const sanitizedAiResponse = escapeHtml(aiResponse);
+
+
+            updatePreviousInputAndResponse(userText, sanitizedAiResponse);
+            updatePreviousChats(userText, sanitizedAiResponse);
+
+            const formattedCode = sanitizedAiResponse.replace(/```([\s\S]+?)```/g, '<code>$1</code>');
+
+
+            const formattedHeadings = formattedCode.replace(/^###(.*)/gm, '<strong>$1</strong>');
+
+            const regex = /(https?:\/\/[^\s]+)/g;
+            const linkedAiResponse = formattedHeadings.replace(regex, '<a href="$1" target="_blank">$1</a>');
+
+
+            const formattedResponse = linkedAiResponse.replace(/\*{3}(.*?)\*{3}/g, '<strong>$1</strong>').replace(/\*{2}(.*?)\*{2}/g, '<strong>$1</strong>');
+
+
+            const modifiedResponseWithColors = formattedResponse
+            // Replace pink keywords
+            .replace(pinkKeywordsRegex, '<i style="color: #FA00FF;">$1</i>')
+            // Replace light red keywords
+            .replace(lightRedKeywordsRegex, '<i style="color:#FF0000;">$1</i>')
+            // Replace blue keywords
+            .replace(blueKeywordsRegex, '<i style="color:#00E0FF;">$1</i>')
+            // Replace yellow keywords
+            .replace(yellowKeywordsRegex, '<i style="color:#FFF500;">$1</i>')
+            // Replace orange keywords
+            .replace(orangeKeywordsRegex, '<i style="color:#FF7A00;">$1</i>').replace(greenKeywordsRegex, '<i style="color:#18A727;">$1</i>');
+
+
+
+
+
+
+            const modifiedResponse = modifiedResponseWithColors.replace(/\@\@\@(.*?)\@\@\@/gs, '<em class="styled-code">$1</em>');
+
+const incomingChatDivWithResponse = createElement(`<div class="chat-content">
+                <div class="chat-details">
+                    <img src="../static/images/chatbot.jpg" alt="chatbot-img">
+                    <p>${modifiedResponse}</p>
+                </div>
+            </div>`, "incoming");
+
+// Check if the formattedResponse contains "@@@" symbols
+if (formattedResponse.includes("@@@")) {
+    const contentArray = formattedResponse.split('@@@').filter(Boolean); // Split response by "@@@" and remove empty strings
+
+    const numIcons = contentArray.length / 2; // Calculate the number of icons
+
+    contentArray.forEach((content, index) => {
+        // Check if index is odd
+        if (index % 2 === 1) {
+            const copyButton = document.createElement("span");
+            copyButton.classList.add("material-symbols-rounded", "copy-btn");
+            copyButton.innerHTML = "content_copy"; // Material icon for copy
+
+            // Add click event listener to copy the content inside "@@@"
+            copyButton.addEventListener("click", () => {
+                const decodedContent = he.decode(contentArray[index]); // Decode HTML entities
+                navigator.clipboard.writeText(decodedContent);
+            });
+
+            // Calculate the position of the copy button
+            let positionY;
+            if (numIcons === 1) {
+                positionY = "50%"; // Center of the y-axis
+            } else {
+                const spacing = 100 / (numIcons + 1); // Calculate the spacing between icons
+                positionY = `${(index / 2 + 1) * spacing}%`; // Calculate the position based on index
+            }
+
+            // Set the position of the copy button
+            copyButton.style.top = positionY;
+            copyButton.style.transform = "translateY(-50%)"; // Center the button vertically
+
+            incomingChatDivWithResponse.querySelector(".chat-details").appendChild(copyButton);
+        }
+    });
+}
+
+
+
+            chatContainer.replaceChild(incomingChatDivWithResponse, incomingChatDiv);
+
+            addChatToLocalStorage(incomingChatDivWithResponse.outerHTML);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        chatInput.value = '';
+        updateChatInputHeight();
+        updateDefaultTextVisibility();
+    };
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault(); // Prevent form submission
+            if (chatInput.value.trim() !== '') { // Check if input is not empty
+                handleOutgoingChat(); // Send message
+            }
+        }
+    };
+
+    chatInput.addEventListener("keypress", handleKeyPress);
+
+    const handleDeleteButtonClick = () => {
+        const confirmation = window.confirm("Do you want to delete all chats?");
+        if (confirmation) {
+            chatContainer.innerHTML = '';
+            updateDefaultTextVisibility();
+            clearChatLocalStorage();
+            clearPreviousChats();
+        }
+    };
+
+    const toggleLightMode = () => {
+        document.body.classList.toggle("light-mode");
+        themeButton.innerText = document.body.classList.contains("light-mode") ? "dark_mode" : "light_mode";
+    };
+
+    themeButton.addEventListener("click", toggleLightMode);
+    deleteButton.addEventListener("click", handleDeleteButtonClick);
+    updateDefaultTextVisibility();
+    sendButton.addEventListener("click", handleOutgoingChat);
+    window.addEventListener("load", () => {
+        updateChatInputHeight();
+    });
+
+    document.addEventListener("click", (event) => {
+        const clickedElement = event.target;
+        if (clickedElement.classList.contains("copy-btn")) {
+            handleCopyButtonClick(clickedElement);
+        }
+    });
+});
+</script>
+
+
+</body>
+</html>
